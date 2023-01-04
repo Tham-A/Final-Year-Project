@@ -1,0 +1,37 @@
+1. Use inspect element tools in browser and work out which of the different requests gets the data needed in order to
+   call the api with the parameters in the requests to get the certain data
+2. visualise the projects whether by hand or digital
+3. get ready for milestone 3 demo by focusing on these questions and aims:
+
+[15/12/2022 10:09] Alex Collins
+Giving a compelling demonstration of your software helps other people to understand what you've done. It makes the work you have done clear. 
+It helps you sell your software and skills to others. 
+- [ ] Can you tell a clear story about your project?
+
+  - What is the problem you are solving?
+
+  - Who benefits from solving it?
+
+  - How your project is solving it?
+
+  - What does your software's architecture look like?
+
+- [ ] Can you demonstrate how your project solves the problem? For example:
+
+  - [Borderline] You could walk through a key use case and use the wireframes to demonstrate.
+
+  - [Acceptable] You could use a mix of wireframes and running software to show how you solve the problem. 
+
+  - [Good] You could show your running software solving the problem.
+
+    - This may not be fully working. It may:
+
+      - Have bugs.
+
+      - Not look as good as you would like.
+
+      - Only work for certain input data.
+
+      - Only show one particularly important use case.
+
+- [ ] Can you explain what you are doing next?
