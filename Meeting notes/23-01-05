@@ -5,10 +5,13 @@
 5. need to increase speed and need to be able to tell a clear story which is key.
 6. sketch designs and how will it be used and what answers will it answer.
 7. make a visualisation for each section and that be a simply excel chart for now.
-8. Decided to come back to getting data for cs(farm) later on - write in report
-9. feedback on report then the deadline is 24th march
-10. For report fill in almost every section with something but have the key points or structure or experiences you want to talk about
-11. JUST PLOT DONT MAKE ASSUMPTIONS
-12. load data into jupter there is a funciton with a nice crossplot that will show the shape of the data
-13. as you test upload these notebooks to github as evidence with screenshots
-14. Write down use case - IMPORTANT spend 15-30mins
+8. Decided to come back to getting data for cs(farm) later on - write in report:
+9. talk about time limitation to add data from recent years.
+10. struggle to scrape data from sites using parsehub and inspect element to get data for cs/farm.
+11. talk about how it would be easier for more recents years as the data is more accessible and easier to gather from other sites.
+12. feedback on report then the deadline is 24th march.
+13. For report fill in almost every section with something but have the key points or structure or experiences you want to talk about.
+14. JUST PLOT DONT MAKE ASSUMPTIONS.
+15. load data into jupter there is a funciton with a nice crossplot that will show the shape of the data.
+16. as you test upload these notebooks to github as evidence with screenshots.
+17. Write down use case - IMPORTANT spend 15-30mins.
