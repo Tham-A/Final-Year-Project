@@ -1,0 +1,14 @@
+1. try and see if there are better charts that can be used to visualise the data
+2. https://observablehq.com/@d3/gallery for ideas of visualisation
+3. try 3 or 4 different approaches of visualisation and compare them and see which tells the best story
+4. and add them to report and talk about why one was chosen and the others weren't
+5. consider adding a requirements.txt file to list dependencies
+6. tidy up notebook and think about the use of the cells
+7. break it into more cells to show the flow
+8. and use documentation cells to explain each step
+9. check if cells run when I run all
+10. use case goal - use numbered list so easy to refer to and has an order
+	  for preconditions - expansion of whats therelike having access to data knowledge of team to compare
+11. thinking about using other methods apart from mean
+12. show even the smallest of steps in clickup
+13. for report bullet point and say add screenshots
