@@ -2,10 +2,45 @@
 <meta charset="utf-8">
 <html lang="en">
 <head>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-</head>
-<body>
+<style>
+    #tooltip {  
+    position: relative;
+    padding: 2px;
+    pointer-events: none;
+    border-radius: 4px;
+    box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.25);
+    font: 18px sans-serif;
+    color: #fafafa;
+    line-height: 1;
+    padding: 12px;
+    border-radius: 2px;
+    font-weight: bolder;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+} 
+</style></head>
+<script src="https://d3js.org/d3.v7.min.js"></script>
 
+<body>
 <script type='text/javascript' src='script.js'></script>
+    <div id='wrapper'>
+        <h1>LCK Summer 2017 Golddiff</h1>
+        <hr style='width:100%'>
+        &nbsp;Select Side:&nbsp;
+        <select id='attribute-input' onchange='drawLines();'>
+        <option value='Both'>Both</option>
+        <option value='Blue'>Blue</option>
+        <option value='Red'>Red</option>
+        </select>
+    </br>
+        <svg id='lineChart'></svg>
+    </div>
+    <div id="tooltip"></div>
+    <button id="myButton" class="float-left submit-button" >Home</button>
+
+    <script type="text/javascript">
+        document.getElementById("myButton").onclick = function () {
+            location.href = "index2.html";
+    };
+</script>
 </body>
 </html>
