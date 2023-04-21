@@ -1,0 +1,61 @@
+#tooltip {  
+    position: absolute;
+    padding: 2px;
+    pointer-events: none;
+    border-radius: 4px;
+    box-shadow: 3px 3px 10px 0px rgba(0, 0, 0, 0.25);
+    font: 18px sans-serif;
+    color: #fafafa;
+    line-height: 1;
+    padding: 12px;
+    border-radius: 2px;
+    font-weight: bolder;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+} 
+.button-link {
+      display: inline-block;
+      text-decoration: none;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      padding: 6px 12px;
+      color: #333;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .button-link:hover {
+      background-color: #e8e8e8;
+    }
+    .button-container {
+      display: flex;
+      justify-content: space-evenly;
+    }
+    .visualization{
+        border:#949090 solid 0.5px;
+    }
+    .tick text {
+       fill: #777777;
+    }
+    .xAxis .tick:nth-child(2) text {
+       text-anchor: start;
+    }
+    .tick line {
+       shape-rendering: CrispEdges;
+       stroke: #dddddd;
+    }
+    .tick line.origin{
+       stroke: #aaaaaa;
+    }
+    #race path.domain{
+       display: none;
+    }
+    .text-box {
+        width: 100%;
+    }
+    
+    .text-box textarea {
+        height: 200px;
+        width: 100%;
+        box-sizing: border-box;
+        resize: none;
+    }
