@@ -1,3 +1,40 @@
+body {
+   background-image: url(964702.png);
+   background-size: cover;
+   background-repeat: no-repeat;
+   background-position: center;
+  
+   background-attachment: fixed;
+  
+   height: 300vh;
+   text-align: center;
+}
+h1 {
+   color: yellow;
+   font-size: 40px;
+}
+label {
+   font-size: 25px;
+   color: #055E73;
+   font-weight: bold;
+}
+#year {
+   font-size: 20px;
+}
+#season {
+   font-size: 20px;
+}
+textarea {
+   resize: none;
+   width: 650px;
+   height: auto;
+   border: 5px solid green;
+   padding: 10px;
+   margin: 20px;
+   margin: 0 auto;
+   font-size: 14px;
+}
+
 #tooltip {  
     position: absolute;
     padding: 2px;
@@ -19,7 +56,7 @@
       border: 1px solid #ccc;
       padding: 6px 12px;
       color: #333;
-      font-size: 14px;
+      font-size: 30px;
       cursor: pointer;
       border-radius: 4px;
     }
@@ -30,8 +67,16 @@
       display: flex;
       justify-content: space-evenly;
     }
+    .button-container1 {
+      display: flex;
+      justify-content: space-evenly;
+      font-size: 25px;
+    }
     .visualization{
         border:#949090 solid 0.5px;
+        background-color: rgba(254,254,254,0.95);
+        display: inline-block;
+        margin: 0 auto;    
     }
     .tick text {
        fill: #777777;
@@ -50,12 +95,25 @@
        display: none;
     }
     .text-box {
-        width: 100%;
+        width: 50%;
+        height: auto;
+        background-color: lightgrey;
+        border: 5px solid green;
+        padding: 50px;
+        margin: 20px;
+        margin: 0 auto;
+        font-size: 14px;
+        text-align: left;
     }
-    
-    .text-box textarea {
-        height: 200px;
-        width: 100%;
-        box-sizing: border-box;
-        resize: none;
-    }
+    .text-area {
+      width: 50%;
+      height: auto;
+      background-color: lightgrey;
+      border: 5px solid green;
+      padding: 50px;
+      margin: 20px;
+      margin: 0 auto;
+      font-size: 14px;
+      text-align: left;
+  }
+    /* https://c4.wallpaperflare.com/wallpaper/380/541/277/jhin-league-of-legends-camille-league-of-legends-league-of-legends-pc-gaming-jhin-hd-wallpaper-preview.jpg */

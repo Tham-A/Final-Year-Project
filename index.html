@@ -2,29 +2,29 @@
 <html>
 <head>
 <meta charset="utf-8">
-<link rel='stylesheet' href='style.css'>
+<link rel='stylesheet' href='./style.css?version=1'>
 <title></title></head>
 
 <body>
     <div id='wrapper'>
         <h1 style="text-align: center;">LCK</h1>
-        <hr style='width:100%'>
+        <hr style='width:50%'>
         <div class="button-container">
-            <a href="index2.html" class="button-link" role="button" tabindex="0">LEC</a>
-            <a href="index3.html" class="button-link" role="button" tabindex="0">LCK</a>
-            <a href="index4.html" class="button-link" role="button" tabindex="0">LCS</a>
+            <a href="LEC.html" class="button-link" role="button" tabindex="0">LEC</a>
+            <a href="LCK.html" class="button-link" role="button" tabindex="0">LCK</a>
+            <a href="LCS.html" class="button-link" role="button" tabindex="0">LCS</a>
           </div>
     </br>
-    <div class="button-container">
+    <div class="button-container1">
         <div>
-    &nbsp;Year:&nbsp;
+    <label for="year">Year:</label>
     <select id='year' onchange="onYearChange()">
       <option value='2016'>2016</option>
       <option value='2017'>2017</option>
     </select>
     </div>
     <div>
-        &nbsp;Season:&nbsp;
+        <label for="season">Season:</label>
         <select id='season' onchange="onSeasonChange()">
           <option value='Summer'>Summer</option>
           <option value='Spring'>Spring</option>
@@ -43,6 +43,12 @@
     </br>
         <svg id='lineChart'></svg>
     </div>
+
+</br>
+<textarea rows ="4" readonly>
+You can click on a line to select it and hover over it for more details.
+</textarea></br>
+
 </br>
     <div class="visualization">
     </br>
@@ -62,9 +68,10 @@
     </div>
     
     </br>
-    <div class="text-box">
-        <textarea></textarea>
-    </div></br>
+    <textarea rows ="4" readonly>
+    You can click on the reset button to restart the animation.
+    You can also hover over the bars for more details.
+    </textarea></br>
     
     <div class="visualization">
     </br>
@@ -87,9 +94,11 @@
         <svg id="barChart"></svg>
     </div>
       </br>
-      <div class="text-box">
-        <textarea></textarea>
-    </div></br>
+      <textarea rows ="4" readonly>
+        You can click on the two buttons to sort the data.
+        You can also hover over the bars for more details.
+    </textarea></br>
+
       <div class="visualization">
     </br>
         &nbsp;Select Side:&nbsp;
@@ -102,9 +111,10 @@
         <svg id="heatmap"></svg>
     </div>
     </br>
-    <div class="text-box">
-        <textarea></textarea>
-    </div></br>
+    <textarea rows ="4" readonly>
+        You can hover over the squares for more details.
+    </textarea></br>
+
     <div class="visualization">
     </br>
         <div class="button-container">
@@ -125,9 +135,10 @@
         <svg id="lollipopChart"></svg>
     </div>
     </br>
-    <div class="text-box">
-        <textarea></textarea>
-    </div></br>
+    <textarea rows ="4" readonly>
+        You can click on the two buttons to sort the data.
+        You can also hover over the dots for more details.
+    </textarea></br>
     <div class="visualization">
     </br>
         <div class="button-container">
@@ -148,9 +159,10 @@
         </br>
         <svg id="stackChart"></svg>
     </div></br>
-    <div class="text-box">
-        <textarea></textarea>
-    </div></br>
+    <textarea rows ="4" readonly>
+        You can click and select two teams to compare.
+        You can also hover over the bars for more details.
+    </textarea></br>
       </div>
       <div id="tooltip"></div>
 <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -279,7 +291,7 @@ function barChartRace(data,year,season,side){
     d3.select('#race').selectAll('*').remove();
 
     let index = 0 , top_n = 10;
-    var tickDuration = 500;
+    var tickDuration = 1000;
 
     // Set dimensions and margins
     const margin = { top: 30, right: 30, bottom: 40, left: 90 };
@@ -303,6 +315,7 @@ function barChartRace(data,year,season,side){
     return {
         Team: d.Team,
         Golddiff: JSON.parse(d.Golddiff),
+        Count : JSON.parse(d.Count)
     };
     });
 
@@ -315,10 +328,10 @@ function barChartRace(data,year,season,side){
     parsedData.forEach((d)=>{
         for(var i=0;i<=maxLength;i++){
             if(d.Golddiff[i] == undefined) {
-                raceChartData.push({Team:d.Team, index:i, value:d.Golddiff[d.Golddiff.length-1]})
+                raceChartData.push({Team:d.Team, index:i, value:d.Golddiff[d.Golddiff.length-1] , count:d.Count[d.Golddiff.length-1]})
             }
             else{
-                raceChartData.push({Team:d.Team, index:i, value: d.Golddiff[i]})
+                raceChartData.push({Team:d.Team, index:i, value: d.Golddiff[i] , count:d.Count[i]})
             }
            
         }
@@ -363,11 +376,10 @@ function barChartRace(data,year,season,side){
         .style("fill", (d)=> colorScale(d.Team))
            .on('mouseover', function(d){
             d3.select(this).style("cursor", "pointer").attr('stroke' , 'black').attr('stroke-width' , 2).style('opacity' ,1); 
-
             d3.select("#tooltip")
             .style('opacity' , 1)
               .html("<b>Team: </b>" + d.Team + "</br><b>Minute: </b>" +d.index +
-               "</br><b>Golddiff value: </b>" + d.value)
+               "</br><b>Golddiff value: </b>" + d.value +  "</br><b>Game count: </b>" + d.count)
               .style("left", ( d3.event.pageX + 20)  +"px") 
               .style("top", (d3.event.pageY - 60) + "px")
               .style("fill-opacity","0.5")
@@ -538,12 +550,13 @@ function barChart(data,year,season,side,team){
     return {
         Team: d.Team,
         JglGold: JSON.parse(d.JglGold ),
+        Count : JSON.parse(d.Count)
     };
     });
     
     var barData = []
     parsedData[0].JglGold.forEach((d,i)=>{
-        barData.push({index:i, value:+d})
+        barData.push({index:i, value:+d ,count:parsedData[0].Count[i] })
     })
 
     if(barSort == 'high'){barData.sort((a, b) => b.value - a.value);}
@@ -562,7 +575,7 @@ function barChart(data,year,season,side,team){
     const yAxis = d3.axisLeft(y);
 
     svg.append("g")
-    .attr("transform", `translate(0, ${height})`)
+    .attr("transform", `translate(0, ${height + 6})`)
     .call(xAxis);
 
     svg.append("g")
@@ -583,7 +596,7 @@ function barChart(data,year,season,side,team){
             d3.select("#tooltip")
             .style('opacity' , 1)
               .html("<b>Team: </b>" + team  + "</br><b>Minute: </b>" +d.index +
-               "</br><b>JglGold value: </b>" + d.value)
+               "</br><b>JglGold value: </b>" + d.value + "</br><b>Game count: </b>" + d.count)
               .style("left", ( d3.event.pageX + 20)  +"px") 
               .style("top", (d3.event.pageY - 60) + "px")
               .style("fill-opacity","0.5")
@@ -657,6 +670,7 @@ function heatmap(data,year,season,side){
    return {
        Team: d.Team,
        MidGold: JSON.parse(d.MidGold ),
+       Count : JSON.parse(d.Count)
    };
    });
 
@@ -669,10 +683,10 @@ function heatmap(data,year,season,side){
     parsedData.forEach((d)=>{
         for(var i=0;i<=maxLength;i++){
             if(d.MidGold[i] == undefined) {
-                heatmapData.push({Team:d.Team, index:i, value:0})
+                heatmapData.push({Team:d.Team, index:i, value:0 , count:d.Count[d.MidGold.length-1]})
             }
             else{
-                heatmapData.push({Team:d.Team, index:i, value: d.MidGold[i]})
+                heatmapData.push({Team:d.Team, index:i, value: d.MidGold[i] , count:d.Count[i]})
             }
         
         }
@@ -721,7 +735,7 @@ function heatmap(data,year,season,side){
             d3.select("#tooltip")
             .style('opacity' , 1)
               .html("<b>Team: </b>" + d.Team  + "</br><b>Minute: </b>" +d.index +
-               "</br><b>MidGold value: </b>" + d.value)
+               "</br><b>MidGold value: </b>" + d.value +  "</br><b>Game count: </b>" + d.count)
               .style("left", ( d3.event.pageX + 20)  +"px") 
               .style("top", (d3.event.pageY - 60) + "px")
               .style("fill-opacity","0.5")
@@ -766,12 +780,13 @@ function lollipopChart(data,year,season,side,team){
     return {
         Team: d.Team,
         BotGold: JSON.parse(d.BotGold ),
+        Count : JSON.parse(d.Count)
     };
     });
 
     var lollipopData = []
     parsedData[0].BotGold.forEach((d,i)=>{
-        lollipopData.push({index:i, value:+d})
+        lollipopData.push({index:i, value:+d , count:parsedData[0].Count[i]})
     })
 
     if(lollipopsort == 'high'){lollipopData.sort((a, b) => b.value - a.value);}
@@ -823,7 +838,7 @@ function lollipopChart(data,year,season,side,team){
             d3.select("#tooltip")
             .style('opacity' , 1)
               .html("<b>Team: </b>" + team  + "</br><b>Minute: </b>" +d.index +
-               "</br><b>BotGold value: </b>" + d.value)
+               "</br><b>BotGold value: </b>" + d.value + "</br><b>Game count: </b>" + d.count)
               .style("left", ( d3.event.pageX + 20)  +"px") 
               .style("top", (d3.event.pageY - 60) + "px")
               .style("fill-opacity","0.5")
@@ -897,6 +912,7 @@ function stackedBarChart(data,year,season,side,team1,team2){
     return {
     Team: d.Team,
     SuppGold: JSON.parse(d.SuppGold ),
+    Count : JSON.parse(d.Count)
     };
     });
 
@@ -909,14 +925,17 @@ function stackedBarChart(data,year,season,side,team1,team2){
     parsedData.forEach((d)=>{
         for(var i=0;i<=maxLength;i++){
             if(d.SuppGold[i] == undefined) {
-                stackChartData.push({Team:d.Team, index:i, value:0})
+                stackChartData.push({Team:d.Team, index:i, value:0 , count:0})
             }
             else{
-                stackChartData.push({Team:d.Team, index:i, value: d.SuppGold[i]})
+                stackChartData.push({Team:d.Team, index:i, value: d.SuppGold[i] ,  count:d.Count[i]})
             }
         
         }
     })
+    const team1Data = stackChartData.filter(d=>d.Team == team1)
+    const team2Data = stackChartData.filter(d=>d.Team == team2)
+    console.log('parsedData' , stackChartData , team1Data , team2Data)
 
     const uniqueTeams = Array.from(new Set(stackChartData.map(d => d.Team)));
     const uniqueIndices = Array.from(new Set(stackChartData.map(d => d.index)));
@@ -965,11 +984,14 @@ function stackedBarChart(data,year,season,side,team1,team2){
     .attr("y", d => y(d[1]))
     .attr("height", d => y(d[0]) - y(d[1]))
     .attr("width", x.bandwidth())
-    .on('mouseover', function(d){
+    .on('mouseover', function(d,i){
+        console.log(d,i)
         d3.select(this).style("cursor", "pointer").attr('stroke' , 'black').style('opacity' ,1); 
         d3.select("#tooltip")
         .style('opacity' , 1)
-            .html("<b>"+ team1 +": </b>" + d.data[team1] + "</br><b>"+ team2 +": </b>" + d.data[team2] )
+            .html("<b>"+ team1 +": </b>" + d.data[team1]+"</br><b>" + "Game count: </b>" + 
+            team1Data[i].count  + "</br><b>"+ team2 +": </b>" + d.data[team2] +"</br><b>"+ 
+            "Game count: </b>" + team2Data[i].count)
             .style("left", ( d3.event.pageX)  +"px") 
             .style("top", (d3.event.pageY - 60) + "px")
             .style("fill-opacity","0.5")
@@ -1092,12 +1114,14 @@ function drawLines(){
     let lineChartData = []
     selectedData.forEach(element => { 
         let golddiff = JSON.parse(element.Golddiff)
+        let count = JSON.parse(element.Count)
         let values = []
         golddiff.forEach((el , i)=>{
-            values.push({x:i, y:+el})
+            values.push({x:i, y:+el , count:count[i]})
         })
         lineChartData.push({key:element.Team, values:values})
     }); 
+    console.log(lineChartData)
 
 
     var maxX =  d3.max(lineChartData, function(c) { return d3.max(c.values, function(d) { return d.x; }); }) 
@@ -1171,7 +1195,7 @@ function drawLines(){
         .on('mousemove', function(e){
 
             // Find the corresponding x and y values
-            var xValue = x.invert(d3.mouse(this)[0] - this.getBoundingClientRect().left + 84);
+            var xValue = x.invert(d3.mouse(this)[0] - this.getBoundingClientRect().left + 216);
             var yValue = y.invert(d3.mouse(this)[1] - this.getBoundingClientRect().top);
 
             // Get the y-value at the nearest x-coordinate on the line
@@ -1191,8 +1215,9 @@ function drawLines(){
             .style('opacity' , 1)
             .html("<b>Team: </b>" + d.key +
             "</br><b>Minute:</b> " + xValue.toFixed(0)+
-            "</br><b>Golddiff value:</b> " + yValue.toFixed(2))
-            .style("left", ( d3.event.pageX)  +"px") 
+            "</br><b>Golddiff value:</b> " + yValue.toFixed(2)+
+            "</br><b>Game count:</b> " + d.values[xValue.toFixed(0)].count)
+            .style("left", ( d3.event.pageX + 20)  +"px") 
             .style("top", (d3.event.pageY - 60) + "px")
             .style("fill-opacity","0.5")
             .style('background' , color(d.key) )
@@ -1209,7 +1234,7 @@ function drawLines(){
         }).on('click' , function(e){
             selectedLine = d
             d3.selectAll('.line').style('opacity' , 0.2).style("cursor", "default").attr('stroke-width' , 2)
-            d3.select(this).style("cursor", "pointer").attr('stroke-width' , 7).style('opacity' ,1); 
+            d3.select(this).style("cursor", "pointer").attr('stroke-width' , 10).style('opacity' ,1); 
             
         }) 
 
