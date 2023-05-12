@@ -2,12 +2,12 @@
 <html>
 <head>
 <meta charset="utf-8">
-<link rel='stylesheet' href='./style.css?version=1'>
+<link rel='stylesheet' href='./style.css?version=2'>
 <title></title></head>
 
 <body>
     <div id='wrapper'>
-        <h1 style="text-align: center;">LCK</h1>
+        <h1 style="text-align: center;">Regional Differences in Pro LoL</h1>
         <hr style='width:50%'>
         <div class="button-container">
             <a href="LEC.html" class="button-link" role="button" tabindex="0">LEC</a>
@@ -15,12 +15,13 @@
             <a href="LCS.html" class="button-link" role="button" tabindex="0">LCS</a>
           </div>
     </br>
-    <div class="button-container1">
+    <div class="button-container2">
         <div>
     <label for="year">Year:</label>
     <select id='year' onchange="onYearChange()">
-      <option value='2016'>2016</option>
-      <option value='2017'>2017</option>
+        <option value='2015'>2015</option>
+        <option value='2016'>2016</option>
+        <option value='2017'>2017</option>
     </select>
     </div>
     <div>
@@ -50,6 +51,7 @@ You can click on a line to select it and hover over it for more details.
 </textarea></br>
 
 </br>
+<br></br>
     <div class="visualization">
     </br>
     <div class="button-container">
@@ -72,7 +74,9 @@ You can click on a line to select it and hover over it for more details.
     You can click on the reset button to restart the animation.
     You can also hover over the bars for more details.
     </textarea></br>
-    
+    <br></br>
+    <br></br>
+
     <div class="visualization">
     </br>
         <div class="button-container">
@@ -98,6 +102,8 @@ You can click on a line to select it and hover over it for more details.
         You can click on the two buttons to sort the data.
         You can also hover over the bars for more details.
     </textarea></br>
+    <br></br>
+    <br></br>
 
       <div class="visualization">
     </br>
@@ -114,6 +120,8 @@ You can click on a line to select it and hover over it for more details.
     <textarea rows ="4" readonly>
         You can hover over the squares for more details.
     </textarea></br>
+    <br></br>
+    <br></br>
 
     <div class="visualization">
     </br>
@@ -139,6 +147,9 @@ You can click on a line to select it and hover over it for more details.
         You can click on the two buttons to sort the data.
         You can also hover over the dots for more details.
     </textarea></br>
+    <br></br>
+    <br></br>
+
     <div class="visualization">
     </br>
         <div class="button-container">
@@ -182,14 +193,14 @@ var selectedSeason = 'Summer',
     selectedHeatSide = 'Both',
     selectedLollipopSide = 'Both',
     selectedStackSide = 'Both',
-    selectedBarTeam = 'SKT',
-    selectedLollipopTeam = 'SKT',
-    selectedStackTeam1 = 'SKT',
-    selectedStackTeam2 = 'MVP',
+    selectedBarTeam = ' ',
+    selectedLollipopTeam = ' ',
+    selectedStackTeam1 = ' ',
+    selectedStackTeam2 = ' ',
     barSort = 'none',
     lollipopsort = 'none'
 
-d3.json( "LCKSummer2017.json").then(function(dataset) {
+d3.json("Regions.json").then(function(dataset) {
     data = dataset;
     console.log(data)  
 
@@ -201,7 +212,22 @@ d3.json( "LCKSummer2017.json").then(function(dataset) {
     .domain(Array.from(new Set(data.map((d) => d.Team))))
     .range(d3.schemeCategory10);
  
-    AddTeamDropdown(data,selectedYear,selectedSeason)
+    selectedSeason = document.getElementById('season').value,
+    selectedYear = document.getElementById('year').value,
+    selectedRaceSide = document.getElementById('raceSide').value,
+    selectedBarSide = document.getElementById('barSide').value,
+    selectedHeatSide = document.getElementById('HeatSide').value,
+    selectedLollipopSide = document.getElementById('lollipopSide').value,
+    selectedStackSide = document.getElementById('stackSide').value;
+
+    var filteredData = data.filter(d=>d.Year == selectedYear && d.Season ==  selectedSeason)
+    AddTeamDropdown(filteredData,selectedYear,selectedSeason)
+
+    selectedBarTeam = document.getElementById('teamDropdown').value,
+    selectedLollipopTeam = document.getElementById('teamDropdownlollipop').value,
+    selectedStackTeam1 = document.getElementById('teamDropdownstack1').value,
+    selectedStackTeam2 = document.getElementById('teamDropdownstack2').value, 
+
     drawLines()
     barChartRace(data,selectedYear,selectedSeason,selectedRaceSide)
     barChart(data,selectedYear,selectedSeason,selectedBarSide , selectedBarTeam)
@@ -214,11 +240,15 @@ d3.json( "LCKSummer2017.json").then(function(dataset) {
   console.log(error);
 });
 
+
 function AddTeamDropdown(data,year,season){
+    // d3.selectAll('')
     var dataset = data.filter(d=> d.Year == year && d.Season == season)
     const uniqueTeams = Array.from(new Set(dataset.map((d) => d.Team)));
 
     const dropdownTeam = document.getElementById("teamDropdown");
+    // Clear previous options
+    dropdownTeam.innerHTML = "";
 
     uniqueTeams.forEach((team) => {
         const option = document.createElement("option");
@@ -235,6 +265,7 @@ function AddTeamDropdown(data,year,season){
     });
 
     const dropdownTeamlollipop = document.getElementById("teamDropdownlollipop");
+    dropdownTeamlollipop.innerHTML = "";
 
     uniqueTeams.forEach((team) => {
         const option = document.createElement("option");
@@ -251,6 +282,7 @@ function AddTeamDropdown(data,year,season){
     });
 
     const dropdownTeamSteack1 = document.getElementById("teamDropdownstack1");
+    dropdownTeamSteack1.innerHTML = "";
 
     uniqueTeams.forEach((team) => {
         const option = document.createElement("option");
@@ -267,14 +299,19 @@ function AddTeamDropdown(data,year,season){
     });
 
     const dropdownTeamSteack2 = document.getElementById("teamDropdownstack2");
+    dropdownTeamSteack2.innerHTML = "";
 
-    uniqueTeams.forEach((team) => {
+   // Iterate over the uniqueTeams array and create the options
+   uniqueTeams.forEach((team, index) => {
         const option = document.createElement("option");
         option.value = team;
         option.text = team;
-        // Set the 'selected' attribute if the team is 'MVP'
-        if (team === 'MVP') {option.selected = true;}
         dropdownTeamSteack2.add(option);
+        
+        // Select the second team as the default
+        if (index === 1) {
+            option.selected = true;
+        }
     });
 
     dropdownTeamSteack2.addEventListener("change", function () {
@@ -356,6 +393,15 @@ function barChartRace(data,year,season,side){
       .tickSize(-(height-margin.top-margin.bottom))
       .tickFormat(d => d3.format(',')(d));
 
+    svg.append('text')
+        .attr('class', 'title')
+        .attr('x', width/2)
+        .attr('y', margin.top - 45)
+        .attr('text-anchor', 'middle')
+        .text('Average Top Gold')
+        .style("font-size", "22px")
+        .style("font-weight", "bold");
+
    svg.append('g')
       .attr('class', 'axis xAxis')
       .attr('transform', `translate(0, ${margin.top})`)
@@ -379,7 +425,7 @@ function barChartRace(data,year,season,side){
             d3.select("#tooltip")
             .style('opacity' , 1)
               .html("<b>Team: </b>" + d.Team + "</br><b>Minute: </b>" +d.index +
-               "</br><b>Golddiff value: </b>" + d.value +  "</br><b>Game count: </b>" + d.count)
+               "</br><b>Top Gold value: </b>" + d.value +  "</br><b>Game count: </b>" + d.count)
               .style("left", ( d3.event.pageX + 20)  +"px") 
               .style("top", (d3.event.pageY - 60) + "px")
               .style("fill-opacity","0.5")
@@ -626,6 +672,15 @@ function barChart(data,year,season,side,team){
         .text("JglGold value")
         .attr("class", "y axis label");
 
+    svg.append('text')
+        .attr('class', 'title')
+        .attr('x', width/2)
+        .attr('y', margin.top - 45)
+        .attr('text-anchor', 'middle')
+        .text('Average Jungle Gold')
+        .style("font-size", "22px")
+        .style("font-weight", "bold");
+
    
 }
 
@@ -748,6 +803,20 @@ function heatmap(data,year,season,side){
               .style("left", (0) + "px") 
               .style("top", (0) + "px")
         }) ;
+
+    svg.append('text')
+        .attr('class', 'title')
+        .attr('x', width/2)
+        .attr('y', margin.top - 40)
+        .attr('text-anchor', 'middle')
+        .text('Average Mid Gold')
+        .style("font-size", "22px")
+        .style("font-weight", "bold");
+
+    svg.append("text")      // text label for the x axis
+        .attr("transform", "translate("+ width/2 +"," + (height+margin.top+10) + ")")
+        .style("text-anchor", "middle")
+        .text("Minute");
 }
 
 function HeatSide() {
@@ -868,7 +937,14 @@ function lollipopChart(data,year,season,side,team){
         .text("BotGold value")
         .attr("class", "y axis label");
 
-
+    svg.append('text')
+        .attr('class', 'title')
+        .attr('x', width/2)
+        .attr('y', margin.top - 40)
+        .attr('text-anchor', 'middle')
+        .text('Average Bot Gold')
+        .style("font-size", "22px")
+        .style("font-weight", "bold");
 }
 
 function lollipopSort(sortOrder) {
@@ -940,6 +1016,7 @@ function stackedBarChart(data,year,season,side,team1,team2){
     const uniqueTeams = Array.from(new Set(stackChartData.map(d => d.Team)));
     const uniqueIndices = Array.from(new Set(stackChartData.map(d => d.index)));
 
+    console.log('error')
     const stack = d3.stack()
         .keys(uniqueTeams)
         .value((d, key) => d[key]);
@@ -1029,6 +1106,15 @@ function stackedBarChart(data,year,season,side,team1,team2){
         .text("SuppGold value")
         .attr("class", "y axis label");
 
+    svg.append('text')
+        .attr('class', 'title')
+        .attr('x', width/2)
+        .attr('y', margin.top - 30)
+        .attr('text-anchor', 'middle')
+        .text('Average Support Gold')
+        .style("font-size", "22px")
+        .style("font-weight", "bold");
+
 
 }
 
@@ -1040,8 +1126,6 @@ function stackSide() {
     stackedBarChart(data,selectedYear,selectedSeason , selectedStackSide,selectedStackTeam1,selectedStackTeam2)
 }
 
-
-
 function onSeasonChange() {
     var selectElement = document.getElementById("season");
     var selectedValue = selectElement.value;
@@ -1050,7 +1134,14 @@ function onSeasonChange() {
     barSort = 'none';
     lollipopsort = 'none'
 
-    
+    var filteredData = data.filter(d=>d.Season == selectedSeason && d.Year == document.getElementById('year').value)
+    AddTeamDropdown(filteredData,selectedYear,selectedSeason)
+
+    selectedBarTeam = document.getElementById('teamDropdown').value,
+    selectedLollipopTeam = document.getElementById('teamDropdownlollipop').value,
+    selectedStackTeam1 = document.getElementById('teamDropdownstack1').value,
+    selectedStackTeam2 = document.getElementById('teamDropdownstack2').value, 
+
     // Perform any other actions based on the selected value here
     drawLines()
     barChartRace(data,selectedYear,selectedSeason,selectedRaceSide)
@@ -1068,6 +1159,14 @@ function onYearChange() {
     barSort = 'none';
     lollipopsort = 'none';
 
+    var filteredData = data.filter(d=>d.Season == document.getElementById('season').value && d.Year == selectedYear)
+    AddTeamDropdown(filteredData,selectedYear,selectedSeason)
+
+    selectedBarTeam = document.getElementById('teamDropdown').value,
+    selectedLollipopTeam = document.getElementById('teamDropdownlollipop').value,
+    selectedStackTeam1 = document.getElementById('teamDropdownstack1').value,
+    selectedStackTeam2 = document.getElementById('teamDropdownstack2').value, 
+
 
     // Perform any other actions based on the selected value here
     drawLines()
@@ -1078,6 +1177,7 @@ function onYearChange() {
     stackedBarChart(data,selectedYear,selectedSeason , selectedStackSide,selectedStackTeam1,selectedStackTeam2)
 
 }
+
 
 function drawLines(){
 
@@ -1165,6 +1265,15 @@ function drawLines(){
         .style("text-anchor", "middle")
         .text("Golddiff value")
         .attr("class", "y axis label");
+
+    svg.append('text')
+        .attr('class', 'title')
+        .attr('x', width - 400)
+        .attr('y', margin.top - 5)
+        .attr('text-anchor', 'middle')
+        .text('Gold difference')
+        .style("font-size", "22px")
+        .style("font-weight", "bold");
         
 
         var selectedLine;

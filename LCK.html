@@ -1,9 +1,1349 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>LCK</title>
-    </head>
-    <body>
-Please return to the main page.
-    </body>
+<head>
+<meta charset="utf-8">
+<link rel='stylesheet' href='./style.css?version=2'>
+<title></title></head>
+
+<body>
+    <div id='wrapper'>
+        <h1 style="text-align: center;">LCK</h1>
+        <hr style='width:50%'>
+    </br>
+    <div class="button-container2">
+        <div>
+    <label for="year">Year:</label>
+    <select id='year' onchange="onYearChange()">
+        <option value='2015'>2015</option>
+        <option value='2016'>2016</option>
+        <option value='2017'>2017</option>
+    </select>
+    </div>
+    <div>
+        <label for="season">Season:</label>
+        <select id='season' onchange="onSeasonChange()">
+          <option value='Summer'>Summer</option>
+          <option value='Spring'>Spring</option>
+        </select>
+    </div>
+    </div>
+    </br>
+    <div class="visualization">
+    </br>
+    &nbsp;Select Side:&nbsp;
+                <select id='attribute-input' onchange='drawLines();'>
+                <option value='Both'>Both</option>
+                <option value='Blue'>Blue</option>
+                <option value='Red'>Red</option>
+                </select>
+    </br>
+        <svg id='lineChart'></svg>
+    </div>
+
+</br>
+<textarea rows ="4" readonly>
+You can click on a line to select it and hover over it for more details.
+</textarea></br>
+<br></br>
+
+</br>
+    <div class="visualization">
+    </br>
+    <div class="button-container">
+        <div>
+            &nbsp;Select Side:&nbsp;
+            <select id='raceSide' onchange='RaceSide();'>
+              <option value='Both'>Both</option>
+              <option value='Blue'>Blue</option>
+              <option value='Red'>Red</option>
+            </select>
+        </div>
+    <button class="button-link" onclick="Reset()">Reset</button>
+    </div>
+    </br>
+        <svg id="race"></svg>
+    </div>
+    
+    </br>
+    <textarea rows ="4" readonly>
+    You can click on the reset button to restart the animation.
+    You can also hover over the bars for more details.
+    </textarea></br>
+    <br></br>
+    <br></br>
+    
+    <div class="visualization">
+    </br>
+        <div class="button-container">
+            <div> &nbsp;Select Side:&nbsp;
+                <select id='barSide' onchange='barSide();'>
+                  <option value='Both'>Both</option>
+                  <option value='Blue'>Blue</option>
+                  <option value='Red'>Red</option>
+                </select>
+            </div>
+            <div> &nbsp;Select Team:&nbsp;
+                <select id="teamDropdown"></select>
+            </div>
+            <button id="barSortHigh" class="button-link" onclick="BarSort('high')">Sort by Hightest</button>
+            <button id="barSortLow" class="button-link" onclick="BarSort('low')">Sort by Lowest</button>
+        </div>
+       
+    </br>
+        <svg id="barChart"></svg>
+    </div>
+      </br>
+      <textarea rows ="4" readonly>
+        You can click on the two buttons to sort the data.
+        You can also hover over the bars for more details.
+    </textarea></br>
+    <br></br>
+    <br></br>
+
+      <div class="visualization">
+    </br>
+        &nbsp;Select Side:&nbsp;
+        <select id='HeatSide' onchange='HeatSide();'>
+          <option value='Both'>Both</option>
+          <option value='Blue'>Blue</option>
+          <option value='Red'>Red</option>
+        </select>
+    </br>
+        <svg id="heatmap"></svg>
+    </div>
+    </br>
+    <textarea rows ="4" readonly>
+        You can hover over the squares for more details.
+    </textarea></br>
+    <br></br>
+    <br></br>
+
+    <div class="visualization">
+    </br>
+        <div class="button-container">
+            <div> &nbsp;Select Side:&nbsp;
+            <select id='lollipopSide' onchange='lollipopSide();'>
+              <option value='Both'>Both</option>
+              <option value='Blue'>Blue</option>
+              <option value='Red'>Red</option>
+            </select>
+        </div>
+        <div> &nbsp;Select Team:&nbsp;
+            <select id="teamDropdownlollipop"></select>
+        </div>
+        <button id="lollipopSortHigh" class="button-link" onclick="lollipopSort('high')">Sort by Hightest</button>
+        <button id="lollipopSortLow" class="button-link" onclick="lollipopSort('low')">Sort by Lowest</button>
+    </div>
+        </br>
+        <svg id="lollipopChart"></svg>
+    </div>
+    </br>
+    <textarea rows ="4" readonly>
+        You can click on the two buttons to sort the data.
+        You can also hover over the dots for more details.
+    </textarea></br>
+    <br></br>
+    <br></br>
+    
+    <div class="visualization">
+    </br>
+        <div class="button-container">
+            <div> &nbsp;Select Side:&nbsp;
+            <select id='stackSide' onchange='stackSide();'>
+              <option value='Both'>Both</option>
+              <option value='Blue'>Blue</option>
+              <option value='Red'>Red</option>
+            </select>
+        </div>
+        <div> &nbsp;Select Team#1:&nbsp;
+            <select id="teamDropdownstack1"></select>
+        </div>
+        <div> &nbsp;Select Team#2:&nbsp;
+            <select id="teamDropdownstack2"></select>
+        </div>        
+    </div>
+        </br>
+        <svg id="stackChart"></svg>
+    </div></br>
+    <textarea rows ="4" readonly>
+        You can click and select two teams to compare.
+        You can also hover over the bars for more details.
+    </textarea></br>
+      </div>
+      <div id="tooltip"></div>
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+
+var margin = {top: 20, right: 200, bottom: 40, left: 80},
+width = 960 - margin.left - margin.right,
+height = 500 - margin.top - margin.bottom;
+
+var data , colorScale;
+var tooltip = d3.select("#tooltip").attr('opacity' , 0);
+
+var selectedSeason = 'Summer',
+    selectedYear = '2015',
+    selectedRaceSide = 'Both',
+    selectedBarSide = 'Both',
+    selectedHeatSide = 'Both',
+    selectedLollipopSide = 'Both',
+    selectedStackSide = 'Both',
+    selectedBarTeam = ' ',
+    selectedLollipopTeam = ' ',
+    selectedStackTeam1 = ' ',
+    selectedStackTeam2 = ' ',
+    barSort = 'none',
+    lollipopsort = 'none'
+
+d3.json( "LCKSummer2017.json").then(function(dataset) {
+    data = dataset;
+    console.log(data)  
+
+    // Extract unique team names
+    const uniqueTeams = Array.from(new Set(data.map((d) => d.Team)));
+
+    // Create a color scale based on unique team names
+    colorScale = d3.scaleOrdinal()
+    .domain(Array.from(new Set(data.map((d) => d.Team))))
+    .range(d3.schemeCategory10);
+ 
+    selectedSeason = document.getElementById('season').value,
+    selectedYear = document.getElementById('year').value,
+    selectedRaceSide = document.getElementById('raceSide').value,
+    selectedBarSide = document.getElementById('barSide').value,
+    selectedHeatSide = document.getElementById('HeatSide').value,
+    selectedLollipopSide = document.getElementById('lollipopSide').value,
+    selectedStackSide = document.getElementById('stackSide').value;
+
+    var filteredData = data.filter(d=>d.Year == selectedYear && d.Season ==  selectedSeason)
+    AddTeamDropdown(filteredData,selectedYear,selectedSeason)
+
+    selectedBarTeam = document.getElementById('teamDropdown').value,
+    selectedLollipopTeam = document.getElementById('teamDropdownlollipop').value,
+    selectedStackTeam1 = document.getElementById('teamDropdownstack1').value,
+    selectedStackTeam2 = document.getElementById('teamDropdownstack2').value, 
+
+    drawLines()
+    barChartRace(data,selectedYear,selectedSeason,selectedRaceSide)
+    barChart(data,selectedYear,selectedSeason,selectedBarSide , selectedBarTeam)
+    heatmap(data,selectedYear,selectedSeason,selectedHeatSide)
+    lollipopChart(data,selectedYear,selectedSeason,selectedLollipopSide , selectedLollipopTeam)
+    stackedBarChart(data,selectedYear,selectedSeason , selectedStackSide,selectedStackTeam1,selectedStackTeam2)
+
+})
+.catch(function(error) {
+  console.log(error);
+});
+
+function AddTeamDropdown(data,year,season){
+    // d3.selectAll('')
+    var dataset = data.filter(d=> d.Year == year && d.Season == season)
+    const uniqueTeams = Array.from(new Set(dataset.map((d) => d.Team)));
+
+    const dropdownTeam = document.getElementById("teamDropdown");
+    // Clear previous options
+    dropdownTeam.innerHTML = "";
+
+    uniqueTeams.forEach((team) => {
+        const option = document.createElement("option");
+        option.value = team;
+        option.text = team;
+        dropdownTeam.add(option);
+    });
+
+    dropdownTeam.addEventListener("change", function () {
+        selectedBarTeam = this.value
+        console.log("Selected team:", this.value);
+        barSort = 'none'
+        barChart(data,selectedYear,selectedSeason,selectedBarSide , selectedBarTeam)
+    });
+
+    const dropdownTeamlollipop = document.getElementById("teamDropdownlollipop");
+    dropdownTeamlollipop.innerHTML = "";
+
+    uniqueTeams.forEach((team) => {
+        const option = document.createElement("option");
+        option.value = team;
+        option.text = team;
+        dropdownTeamlollipop.add(option);
+    });
+
+    dropdownTeamlollipop.addEventListener("change", function () {
+        selectedLollipopTeam = this.value
+        console.log("Selected team:", this.value);
+        lollipopsort = 'none'
+        lollipopChart(data,selectedYear,selectedSeason,selectedLollipopSide , selectedLollipopTeam)
+    });
+
+    const dropdownTeamSteack1 = document.getElementById("teamDropdownstack1");
+    dropdownTeamSteack1.innerHTML = "";
+
+    uniqueTeams.forEach((team) => {
+        const option = document.createElement("option");
+        option.value = team;
+        option.text = team;
+        dropdownTeamSteack1.add(option);
+    });
+
+    dropdownTeamSteack1.addEventListener("change", function () {
+        selectedStackTeam1 = this.value
+        console.log("Selected team:", this.value);
+        stackedBarChart(data,selectedYear,selectedSeason , selectedStackSide,selectedStackTeam1,selectedStackTeam2)
+
+    });
+
+    const dropdownTeamSteack2 = document.getElementById("teamDropdownstack2");
+    dropdownTeamSteack2.innerHTML = "";
+
+   // Iterate over the uniqueTeams array and create the options
+   uniqueTeams.forEach((team, index) => {
+        const option = document.createElement("option");
+        option.value = team;
+        option.text = team;
+        dropdownTeamSteack2.add(option);
+        
+        // Select the second team as the default
+        if (index === 1) {
+            option.selected = true;
+        }
+    });
+
+    dropdownTeamSteack2.addEventListener("change", function () {
+        selectedStackTeam2 = this.value
+        console.log("Selected team:", this.value);
+        stackedBarChart(data,selectedYear,selectedSeason , selectedStackSide,selectedStackTeam1,selectedStackTeam2)
+
+    });
+
+}
+
+function barChartRace(data,year,season,side){
+
+    d3.select('#race').selectAll('*').remove();
+
+    let index = 0 , top_n = 10;
+    var tickDuration = 1000;
+
+    // Set dimensions and margins
+    const margin = { top: 30, right: 30, bottom: 40, left: 90 };
+    const width = 800 - margin.left - margin.right;
+    const height = 600 - margin.top - margin.bottom;
+
+    let barPadding = (height-(margin.bottom+margin.top))/(10*5);
+
+    // Select the SVG container and set its dimensions
+    const svg = d3
+    .select("#race")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    var dataset = data.filter(d=> d.Year == year && d.Season == season && d.Side == side)
+
+    // Extract Golddiff values and parse them as JSON
+    const parsedData = dataset.map((d) => {
+    return {
+        Team: d.Team,
+        Golddiff: JSON.parse(d.Golddiff),
+        Count : JSON.parse(d.Count)
+    };
+    });
+
+    // Find the maximum Golddiff value across all teams
+    const maxGolddiff = d3.max(parsedData, (d) => d3.max(d.Golddiff));
+
+    const maxLength = d3.max(parsedData, (d) => d.Golddiff.length) - 1
+
+    var raceChartData = []
+    parsedData.forEach((d)=>{
+        for(var i=0;i<=maxLength;i++){
+            if(d.Golddiff[i] == undefined) {
+                raceChartData.push({Team:d.Team, index:i, value:d.Golddiff[d.Golddiff.length-1] , count:d.Count[d.Golddiff.length-1]})
+            }
+            else{
+                raceChartData.push({Team:d.Team, index:i, value: d.Golddiff[i] , count:d.Count[i]})
+            }
+           
+        }
+    })
+   
+    let indexSlice = raceChartData.filter(d => d.index == index )
+      .sort((a,b) => b.value - a.value);
+
+   indexSlice.forEach((d,i) => d.rank = i);
+
+   let x = d3.scaleLinear()
+      .domain([ d3.min(indexSlice, d => d.value), d3.max(indexSlice, d => d.value)])
+      .range([margin.left, width-margin.right]);
+
+   let y = d3.scaleLinear()
+      .domain([10, 0])
+      .range([height-margin.bottom, margin.top]);
+
+   let xAxis = d3.axisTop()
+      .scale(x)
+      .ticks(width > 500 ? 5:2)
+      .tickSize(-(height-margin.top-margin.bottom))
+      .tickFormat(d => d3.format(',')(d));
+
+    svg.append('text')
+        .attr('class', 'title')
+        .attr('x', width/2)
+        .attr('y', margin.top - 45)
+        .attr('text-anchor', 'middle')
+        .text('Average Top Gold')
+        .style("font-size", "22px")
+        .style("font-weight", "bold");
+
+   svg.append('g')
+      .attr('class', 'axis xAxis')
+      .attr('transform', `translate(0, ${margin.top})`)
+      .call(xAxis)
+      .selectAll('.tick line')
+      .classed('origin', d => d == 0);
+
+      svg
+        .selectAll("rect.bar")
+        .data(indexSlice, (d) => d.Team)
+        .enter()
+        .append("rect")
+        .attr("class", "bar")
+        .attr("x", (d) => (d.value < 0 ? x(d.value) : x(0)) + 1)
+        .attr("width", (d) => Math.abs(x(d.value) - x(0)))
+        .attr("y", (d) => y(d.rank) + 5)
+        .attr("height", y(1) - y(0) - barPadding)
+        .style("fill", (d)=> colorScale(d.Team))
+           .on('mouseover', function(d){
+            d3.select(this).style("cursor", "pointer").attr('stroke' , 'black').attr('stroke-width' , 2).style('opacity' ,1); 
+            d3.select("#tooltip")
+            .style('opacity' , 1)
+              .html("<b>Team: </b>" + d.Team + "</br><b>Minute: </b>" +d.index +
+               "</br><b>Top Gold value: </b>" + d.value +  "</br><b>Game count: </b>" + d.count)
+              .style("left", ( d3.event.pageX + 20)  +"px") 
+              .style("top", (d3.event.pageY - 60) + "px")
+              .style("fill-opacity","0.5")
+              .style('background' , colorScale(d.Team) )
+        })
+        .on('mouseout' , function(d){
+            d3.select(this).style("cursor", "default").attr('stroke' , 'none'); 
+            d3.selectAll('path').style('opacity' , 1)
+            d3.select("#tooltip").style('opacity' , 0).html('')
+              .style("left", (0) + "px") 
+              .style("top", (0) + "px")
+        }) ;
+
+
+   svg.selectAll('text.label')
+      .data(indexSlice, d => d.Team)
+      .enter()
+      .append('text')
+      .attr('class', 'label')
+      .attr('x', d => x(d.value)-8)
+      .attr('y', d => y(d.rank)+5+((y(1)-y(0))/2)+1)
+      .style('text-anchor', 'end')
+      .html(d => d.Team);
+
+      let indexText = svg.append('text')
+      .attr('class', 'indexText')
+      .attr('x', width-margin.right)
+      .attr('y', height-25)
+      .style('text-anchor', 'end')
+      .style('fill', '#ffffff')
+      .style('font-size' , '24px')
+      .style('stroke','black')
+      .style('stroke-width', 1)
+      .style('stroke-linejoin', 'round')
+      .text(index)
+
+   
+
+      let ticker = d3.interval(e => {
+
+            indexSlice = raceChartData.filter(d => d.index == index && !isNaN(d.value))
+            .sort((a,b) => b.value - a.value);
+
+            indexSlice.forEach((d,i) => d.rank = i);
+
+            x.domain([
+                    d3.min(indexSlice, (d) => Math.min(0, d.value)),
+                    d3.max(indexSlice, (d) => d.value),
+                    ]);
+
+
+            svg.select('.xAxis')
+            .transition()
+            .duration(tickDuration)
+            .ease(d3.easeLinear)
+            .call(xAxis);
+
+            let bars = svg.selectAll('.bar').data(indexSlice, d => d.Team);
+
+            bars
+                .enter()
+                .append("rect")
+                .attr("class", (d) => `bar ${d.Team.replace(/\s/g, "_")}`)
+                .attr("x", (d) => (d.value < 0 ? x(d.value) : x(0)) + 1)
+                .attr("width", (d) => Math.abs(x(d.value) - x(0)) - 1)
+                .attr("y", (d) => y(10 + 1) + 5)
+                .attr("height", y(1) - y(0) - barPadding)
+                .style("fill", (d)=> colorScale(d.Team))
+                .transition()
+                .duration(tickDuration)
+                .ease(d3.easeLinear)
+                .attr("y", (d) => y(d.rank) + 5);
+
+            
+            bars
+                .transition()
+                .duration(tickDuration)
+                .ease(d3.easeLinear)
+                .attr("x", (d) => (d.value < 0 ? x(d.value) : x(0)) + 1)
+                .attr("width", (d) => Math.abs(x(d.value) - x(0)) - 1)
+                .attr("y", (d) => y(d.rank) + 5);
+
+
+            bars
+            .exit()
+            .transition()
+            .duration(tickDuration)
+            .ease(d3.easeLinear)
+            .attr("x", (d) => (d.value < 0 ? x(d.value) : x(0)) + 1)
+            .attr("width", (d) => Math.abs(x(d.value) - x(0)) - 1)
+            .attr("y", (d) => y(10 + 1) + 5)
+            .remove();
+
+            let labels = svg.selectAll('.label')
+            .data(indexSlice, d => d.Team);
+
+            labels
+            .enter()
+            .append("text")
+            .attr("class", "label")
+            .attr("x", (d) => (d.value >= 0 ? x(d.value) - 8 : x(d.value) + 8))
+            .attr("y", (d) => y(top_n + 1) + 5 + (y(1) - y(0)) / 2)
+            .style("text-anchor", (d) => (d.value >= 0 ? "end" : "start"))
+            .html((d) => d.Team)
+            .transition()
+            .duration(tickDuration)
+            .ease(d3.easeLinear)
+            .attr("y", (d) => y(d.rank) + 5 + (y(1) - y(0)) / 2 + 1);
+
+
+            labels
+            .transition()
+            .duration(tickDuration)
+            .ease(d3.easeLinear)
+            .attr("x", (d) => (d.value >= 0 ? x(d.value) - 8 : x(d.value) + 30))
+            .attr("y", (d) => y(d.rank) + 5 + (y(1) - y(0)) / 2 + 1);
+
+
+            labels
+            .exit()
+            .transition()
+            .duration(tickDuration)
+            .ease(d3.easeLinear)
+            .attr("x", (d) => (d.value >= 0 ? x(d.value) - 8 : x(d.value) + 8))
+            .attr('y', d => y(top_n+1)+5)
+            .remove();
+
+            indexText.text(index);
+
+            if(index == maxLength) ticker.stop();
+            index = ((+index) + 1);
+            },tickDuration);
+
+
+    }
+
+function RaceSide() {
+    var selectElement = document.getElementById("raceSide");
+    var selectedValue = selectElement.value;
+    selectedRaceSide = selectedValue;
+    console.log("Selected raceSide:", selectedValue);
+
+    barChartRace(data,selectedYear,selectedSeason,selectedRaceSide)
+}
+
+function Reset(){
+    barChartRace(data,selectedYear,selectedSeason,selectedRaceSide)
+}
+
+function barChart(data,year,season,side,team){
+
+    d3.select('#barChart').selectAll('*').remove();
+
+    const margin = { top: 30, right: 30, bottom: 50, left: 80 };
+    const width = 1200 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
+
+    const svg = d3.select("#barChart")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    var dataset = data.filter(d=> d.Year == year && d.Season == season && d.Side == side && d.Team == team)
+   
+    // Extract JglGold values and parse them as JSON
+    const parsedData = dataset.map((d) => {
+    return {
+        Team: d.Team,
+        JglGold: JSON.parse(d.JglGold ),
+        Count : JSON.parse(d.Count)
+    };
+    });
+    
+    var barData = []
+    parsedData[0].JglGold.forEach((d,i)=>{
+        barData.push({index:i, value:+d ,count:parsedData[0].Count[i] })
+    })
+
+    if(barSort == 'high'){barData.sort((a, b) => b.value - a.value);}
+    else if(barSort == 'low'){barData.sort((a, b) => a.value - b.value);}
+
+    const y = d3.scaleLinear()
+    .domain([d3.min(barData, d => d.value), d3.max(barData, d => d.value)])
+    .range([height, 0]);
+
+    const x = d3.scaleBand()
+    .domain(barData.map((d, i) => d.index))
+    .range([0, width])
+    .padding(0.1);
+
+    const xAxis = d3.axisBottom(x);
+    const yAxis = d3.axisLeft(y);
+
+    svg.append("g")
+    .attr("transform", `translate(0, ${height + 6})`)
+    .call(xAxis);
+
+    svg.append("g")
+    .call(yAxis);
+
+    svg.selectAll("rect")
+        .data(barData)
+        .enter()
+        .append("rect")
+        .attr("x", (d, i) => x(d.index))
+        .attr("y", d => y(Math.max(0, d.value)))
+        .attr("width", x.bandwidth())
+        .attr("height", d => Math.abs(y(d.value) - y(0)))
+        .attr("fill", colorScale(team))
+        .on('mouseover', function(d){
+            d3.select(this).style("cursor", "pointer").attr('stroke' , 'black').attr('stroke-width' , 2).style('opacity' ,1); 
+
+            d3.select("#tooltip")
+            .style('opacity' , 1)
+              .html("<b>Team: </b>" + team  + "</br><b>Minute: </b>" +d.index +
+               "</br><b>JglGold value: </b>" + d.value + "</br><b>Game count: </b>" + d.count)
+              .style("left", ( d3.event.pageX + 20)  +"px") 
+              .style("top", (d3.event.pageY - 60) + "px")
+              .style("fill-opacity","0.5")
+              .style('background' , colorScale(team) )
+        })
+        .on('mouseout' , function(d){
+            d3.select(this).style("cursor", "default").attr('stroke' , 'none'); 
+            d3.selectAll('path').style('opacity' , 1)
+            d3.select("#tooltip").style('opacity' , 0).html('')
+              .style("left", (0) + "px") 
+              .style("top", (0) + "px")
+        }) ;;
+
+     //add label to x-axis
+     svg.append("text")      // text label for the x axis
+    .attr("transform", "translate("+ width/2 +"," + (height+margin.top+20) + ")")
+        .style("text-anchor", "middle")
+        .text("Minute");
+
+    // Add a label to the y axis
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -margin.left)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("JglGold value")
+        .attr("class", "y axis label");
+
+    svg.append('text')
+        .attr('class', 'title')
+        .attr('x', width/2)
+        .attr('y', margin.top - 45)
+        .attr('text-anchor', 'middle')
+        .text('Average Jungle Gold')
+        .style("font-size", "22px")
+        .style("font-weight", "bold");
+   
+}
+
+function BarSort(sortOrder) {
+  if (sortOrder === "high") {
+    barSort = 'high'
+  } else if (sortOrder === "low") {
+    barSort = 'low'
+  }
+  barChart(data,selectedYear,selectedSeason,selectedBarSide , selectedBarTeam)  
+}
+
+function barSide() {
+    var selectElement = document.getElementById("barSide");
+    var selectedValue = selectElement.value;
+    selectedBarSide = selectedValue;
+    console.log("Selected barSide:", selectedValue);
+    barSort = 'none'
+    barChart(data,selectedYear,selectedSeason,selectedBarSide , selectedBarTeam)
+
+
+}
+
+function heatmap(data,year,season,side){
+
+    d3.select('#heatmap').selectAll('*').remove();
+
+    const margin = { top: 30, right: 30, bottom: 40, left: 60 };
+    const width = 1300 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
+
+    const svg = d3.select("#heatmap")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    var dataset = data.filter(d=> d.Year == year && d.Season == season && d.Side == side)
+   
+   // Extract MidGold values and parse them as JSON
+   const parsedData = dataset.map((d) => {
+   return {
+       Team: d.Team,
+       MidGold: JSON.parse(d.MidGold ),
+       Count : JSON.parse(d.Count)
+   };
+   });
+
+   // Find the maximum MidGold value across all teams
+   const maxGolddiff = d3.max(parsedData, (d) => d3.max(d.MidGold));
+
+    const maxLength = d3.max(parsedData, (d) => d.MidGold.length) - 1;
+
+    var heatmapData = []
+    parsedData.forEach((d)=>{
+        for(var i=0;i<=maxLength;i++){
+            if(d.MidGold[i] == undefined) {
+                heatmapData.push({Team:d.Team, index:i, value:0 , count:d.Count[d.MidGold.length-1]})
+            }
+            else{
+                heatmapData.push({Team:d.Team, index:i, value: d.MidGold[i] , count:d.Count[i]})
+            }
+        
+        }
+    })
+    console.log(heatmapData)
+
+    const x = d3.scaleBand()
+    .domain(heatmapData.map(d => d.index))
+    .range([0, width])
+    .padding(0.05);
+
+    const y = d3.scaleBand()
+    .domain(heatmapData.map(d => d.Team))
+    .range([0, height])
+    .padding(0.05);
+
+    const colorScaleValue = d3.scaleSequential()
+    .domain([d3.min(heatmapData, d => d.value), d3.max(heatmapData, d => d.value)])
+    .interpolator(d3.interpolateBlues);
+
+    const xAxis = d3.axisBottom(x);
+    const yAxis = d3.axisLeft(y);
+
+    svg.append("g")
+    .attr("transform", `translate(0, ${height})`)
+    .call(xAxis);
+
+    svg.append("g")
+    .call(yAxis);
+
+    svg.selectAll("rect")
+    .data(heatmapData)
+    .enter()
+    .append("rect")
+    .attr("x", d => x(d.index))
+    .attr("y", d => y(d.Team))
+    .attr("width", x.bandwidth())
+    .attr("height", y.bandwidth())
+    .attr("fill", d => {
+        if (d.value == 0) return 'black'
+        else return colorScaleValue(d.value)
+    })
+    .on('mouseover', function(d){
+            d3.select(this).style("cursor", "pointer").attr('stroke' , 'black').attr('stroke-width' , 2).style('opacity' ,1); 
+
+            d3.select("#tooltip")
+            .style('opacity' , 1)
+              .html("<b>Team: </b>" + d.Team  + "</br><b>Minute: </b>" +d.index +
+               "</br><b>MidGold value: </b>" + d.value +  "</br><b>Game count: </b>" + d.count)
+              .style("left", ( d3.event.pageX + 20)  +"px") 
+              .style("top", (d3.event.pageY - 60) + "px")
+              .style("fill-opacity","0.5")
+              .style('background' , colorScale(d.Team) )
+        })
+        .on('mouseout' , function(d){
+            d3.select(this).style("cursor", "default").attr('stroke' , 'none'); 
+            d3.selectAll('path').style('opacity' , 1)
+            d3.select("#tooltip").style('opacity' , 0).html('')
+              .style("left", (0) + "px") 
+              .style("top", (0) + "px")
+        }) ;
+
+    svg.append('text')
+        .attr('class', 'title')
+        .attr('x', width/2)
+        .attr('y', margin.top - 40)
+        .attr('text-anchor', 'middle')
+        .text('Average Mid Gold')
+        .style("font-size", "22px")
+        .style("font-weight", "bold");
+
+    svg.append("text")      // text label for the x axis
+        .attr("transform", "translate("+ width/2 +"," + (height+margin.top+10) + ")")
+        .style("text-anchor", "middle")
+        .text("Minute");
+}
+
+function HeatSide() {
+    var selectElement = document.getElementById("HeatSide");
+    var selectedValue = selectElement.value;
+    selectedHeatSide = selectedValue;
+    console.log("Selected HeatSide:", selectedValue);
+    heatmap(data,selectedYear,selectedSeason,selectedHeatSide)
+
+}
+
+function lollipopChart(data,year,season,side,team){
+
+    d3.select('#lollipopChart').selectAll('*').remove();
+
+    const margin = { top: 30, right: 30, bottom: 50, left: 80 };
+    const width = 1200 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
+
+    const svg = d3.select("#lollipopChart")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    var dataset = data.filter(d=> d.Year == year && d.Season == season && d.Side == side && d.Team == team)
+
+    // Extract BotGold values and parse them as JSON
+    const parsedData = dataset.map((d) => {
+    return {
+        Team: d.Team,
+        BotGold: JSON.parse(d.BotGold ),
+        Count : JSON.parse(d.Count)
+    };
+    });
+
+    var lollipopData = []
+    parsedData[0].BotGold.forEach((d,i)=>{
+        lollipopData.push({index:i, value:+d , count:parsedData[0].Count[i]})
+    })
+
+    if(lollipopsort == 'high'){lollipopData.sort((a, b) => b.value - a.value);}
+    else if(lollipopsort == 'low'){lollipopData.sort((a, b) => a.value - b.value);}
+
+    const y = d3.scaleLinear()
+    .domain([d3.min(lollipopData, d => d.value), d3.max(lollipopData, d => d.value)])
+    .range([height, 0]);
+
+    const x = d3.scaleBand()
+    .domain(lollipopData.map((d, i) => d.index))
+    .range([0, width])
+    .padding(0.1);
+
+    const xAxis = d3.axisBottom(x);
+    const yAxis = d3.axisLeft(y);
+
+    svg.append("g")
+    .attr("transform", `translate(0, ${height})`)
+    .call(xAxis);
+
+    svg.append("g")
+    .call(yAxis);
+
+    // Create lines
+    svg.selectAll(".line")
+    .data(lollipopData)
+    .enter()
+    .append("line")
+    .attr("x1", d => x(d.index) + x.bandwidth() / 2)
+    .attr("x2", d => x(d.index) + x.bandwidth() / 2)
+    .attr("y1", d => y(Math.max(0, d.value)))
+    .attr("y2", y(0))
+    .attr("stroke", colorScale(team))
+    .attr("stroke-width", 2);
+
+    // Create circles
+    svg.selectAll("circle")
+    .data(lollipopData)
+    .enter()
+    .append("circle")
+    .attr("cx", d => x(d.index) + x.bandwidth() / 2)
+    .attr("cy", d => y(Math.max(0, d.value)))
+    .attr("r", 5)
+    .attr("fill", colorScale(team))
+    .on('mouseover', function(d){
+            d3.select(this).style("cursor", "pointer").attr('stroke' , 'black').attr('stroke-width' , 2).style('opacity' ,1); 
+
+            d3.select("#tooltip")
+            .style('opacity' , 1)
+              .html("<b>Team: </b>" + team  + "</br><b>Minute: </b>" +d.index +
+               "</br><b>BotGold value: </b>" + d.value + "</br><b>Game count: </b>" + d.count)
+              .style("left", ( d3.event.pageX + 20)  +"px") 
+              .style("top", (d3.event.pageY - 60) + "px")
+              .style("fill-opacity","0.5")
+              .style('background' , colorScale(team) )
+        })
+        .on('mouseout' , function(d){
+            d3.select(this).style("cursor", "default").attr('stroke' , 'none'); 
+            d3.selectAll('path').style('opacity' , 1)
+            d3.select("#tooltip").style('opacity' , 0).html('')
+              .style("left", (0) + "px") 
+              .style("top", (0) + "px")
+        }) ;;
+
+    //add label to x-axis
+    svg.append("text")      // text label for the x axis
+    .attr("transform", "translate("+ width/2 +"," + (height+margin.top+20) + ")")
+        .style("text-anchor", "middle")
+        .text("Minute");
+
+    // Add a label to the y axis
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", -margin.left)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("BotGold value")
+        .attr("class", "y axis label");
+
+    svg.append('text')
+        .attr('class', 'title')
+        .attr('x', width/2)
+        .attr('y', margin.top - 40)
+        .attr('text-anchor', 'middle')
+        .text('Average Bot Gold')
+        .style("font-size", "22px")
+        .style("font-weight", "bold");
+}
+
+function lollipopSort(sortOrder) {
+  if (sortOrder === "high") {
+    lollipopsort = 'high'
+  } else if (sortOrder === "low") {
+    lollipopsort  = 'low'
+  }
+  lollipopChart(data,selectedYear,selectedSeason,selectedLollipopSide , selectedLollipopTeam)
+
+}
+
+function lollipopSide() {
+    var selectElement = document.getElementById("lollipopSide");
+    var selectedValue = selectElement.value;
+    selectedLollipopSide = selectedValue;
+    console.log("Selected lollipopSide:", selectedValue);
+    lollipopsort = 'none'
+    lollipopChart(data,selectedYear,selectedSeason,selectedLollipopSide , selectedLollipopTeam)
+}
+
+function stackedBarChart(data,year,season,side,team1,team2){
+
+    d3.select('#stackChart').selectAll('*').remove();
+
+    const margin = { top: 30, right: 30, bottom: 60, left: 80 };
+    const width = 1300 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
+
+    const svg = d3.select("#stackChart")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    var dataset = data.filter(d=> d.Year == year && d.Season == season && d.Side == side) 
+    dataset = dataset.filter(d=> d.Team == team1 || d.Team == team2)
+
+    // Extract SuppGold values and parse them as JSON
+    const parsedData = dataset.map((d) => {
+    return {
+    Team: d.Team,
+    SuppGold: JSON.parse(d.SuppGold ),
+    Count : JSON.parse(d.Count)
+        };
+    });
+
+    // Find the maximum SuppGold value across all teams
+    const maxSuppGold = d3.max(parsedData, (d) => d3.max(d.SuppGold));
+
+    const maxLength = d3.max(parsedData, (d) => d.SuppGold.length) - 1;
+
+    var stackChartData = []
+    parsedData.forEach((d)=>{
+        for(var i=0;i<=maxLength;i++){
+            if(d.SuppGold[i] == undefined) {
+                stackChartData.push({Team:d.Team, index:i, value:0 , count:0})
+            }
+            else{
+                stackChartData.push({Team:d.Team, index:i, value: d.SuppGold[i] ,  count:d.Count[i]})
+            }        
+        }
+    })
+    const team1Data = stackChartData.filter(d=>d.Team == team1)
+    const team2Data = stackChartData.filter(d=>d.Team == team2)
+    console.log('parsedData' , stackChartData , team1Data , team2Data)
+
+    const uniqueTeams = Array.from(new Set(stackChartData.map(d => d.Team)));
+    const uniqueIndices = Array.from(new Set(stackChartData.map(d => d.index)));
+
+    const stack = d3.stack()
+        .keys(uniqueTeams)
+        .value((d, key) => d[key]);
+
+    const dataByIndex = d3.nest()
+        .key(d => d.index)
+        .rollup(leaves => {
+            let result = {};
+            leaves.forEach(d => {
+                result[d.Team] = d.value;
+            });
+            return result;
+        })
+        .entries(stackChartData);
+
+    const stackedData = stack(dataByIndex.map(d => d.value));
+
+    const x = d3.scaleBand()
+        .domain(uniqueIndices)
+        .rangeRound([0, width])
+        .paddingInner(0.05);
+
+    const y = d3.scaleLinear()
+        .domain([0, d3.max(stackedData, d => d3.max(d, d => d[1]))])
+        .range([height, 0]);
+
+    const z = d3.scaleOrdinal()
+        .domain(uniqueTeams)
+        .range(d3.schemeCategory10);
+
+    const xAxis = d3.axisBottom(x);
+    const yAxis = d3.axisLeft(y);
+
+    svg.selectAll("g")
+    .data(stackedData)
+    .enter().append("g")
+    .attr("fill", d => colorScale(d.key))
+    .selectAll("rect")
+    .data(d => d)
+    .enter().append("rect")
+    .attr("x", (d, i) => x(i))
+    .attr("y", d => y(d[1]))
+    .attr("height", d => y(d[0]) - y(d[1]))
+    .attr("width", x.bandwidth())
+    .on('mouseover', function(d,i){
+        console.log(d,i)
+        d3.select(this).style("cursor", "pointer").attr('stroke' , 'black').style('opacity' ,1); 
+        d3.select("#tooltip")
+        .style('opacity' , 1)
+            .html("<b>"+ team1 +": </b>" + d.data[team1]+"</br><b>" + "Game count: </b>" + 
+            team1Data[i].count  + "</br><b>"+ team2 +": </b>" + d.data[team2] +"</br><b>"+ 
+            "Game count: </b>" + team2Data[i].count)
+            .style("left", ( d3.event.pageX)  +"px") 
+            .style("top", (d3.event.pageY - 60) + "px")
+            .style("fill-opacity","0.5")
+            .style('background' , colorScale(team1) )
+        })
+        .on('mouseout' , function(d){
+            d3.select(this).style("cursor", "default").attr('stroke' , 'none'); 
+            d3.select("#tooltip").style('opacity' , 0).html('')
+              .style("left", (0) + "px") 
+              .style("top", (0) + "px")
+        }) ;
+
+    svg.append("g")
+        .attr("class", "axis")
+        .attr("transform", `translate(0,${height})`)
+        .call(xAxis);
+
+    svg.append("g")
+        .attr("class", "axis")
+        .call(yAxis);
+
+        //add label to x-axis
+    svg.append("text")      // text label for the x axis
+    .attr("transform", "translate("+ width/2 +"," + (height+margin.top+20) + ")")
+        .style("text-anchor", "middle")
+        .text("Minute");
+
+    // Add a label to the y axis
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("SuppGold value")
+        .attr("class", "y axis label");
+
+    svg.append('text')
+        .attr('class', 'title')
+        .attr('x', width/2)
+        .attr('y', margin.top - 30)
+        .attr('text-anchor', 'middle')
+        .text('Average Support Gold')
+        .style("font-size", "22px")
+        .style("font-weight", "bold");
+
+
+}
+
+function stackSide() {
+    var selectElement = document.getElementById("stackSide");
+    var selectedValue = selectElement.value;
+    selectedStackSide = selectedValue;
+    console.log("Selected stackSide:", selectedValue);
+    stackedBarChart(data,selectedYear,selectedSeason , selectedStackSide,selectedStackTeam1,selectedStackTeam2)
+}
+
+function onSeasonChange() {
+    var selectElement = document.getElementById("season");
+    var selectedValue = selectElement.value;
+    selectedSeason = selectedValue;
+    console.log("Selected season:", selectedValue);
+    barSort = 'none';
+    lollipopsort = 'none'
+
+    var filteredData = data.filter(d=>d.Season == selectedSeason && d.Year == document.getElementById('year').value)
+    AddTeamDropdown(filteredData,selectedYear,selectedSeason)
+
+    selectedBarTeam = document.getElementById('teamDropdown').value,
+    selectedLollipopTeam = document.getElementById('teamDropdownlollipop').value,
+    selectedStackTeam1 = document.getElementById('teamDropdownstack1').value,
+    selectedStackTeam2 = document.getElementById('teamDropdownstack2').value, 
+
+    // Perform any other actions based on the selected value here
+    drawLines()
+    barChartRace(data,selectedYear,selectedSeason,selectedRaceSide)
+    barChart(data,selectedYear,selectedSeason,selectedBarSide , selectedBarTeam)
+    heatmap(data,selectedYear,selectedSeason,selectedHeatSide)
+    lollipopChart(data,selectedYear,selectedSeason,selectedLollipopSide , selectedLollipopTeam)
+    stackedBarChart(data,selectedYear,selectedSeason , selectedStackSide,selectedStackTeam1,selectedStackTeam2)
+}
+
+function onYearChange() {
+    var selectElement = document.getElementById("year");
+    var selectedValue = selectElement.value;
+    selectedYear = selectedValue;
+    console.log("Selected year:", selectedValue);
+    barSort = 'none';
+    lollipopsort = 'none';
+
+    var filteredData = data.filter(d=>d.Season == document.getElementById('season').value && d.Year == selectedYear)
+    AddTeamDropdown(filteredData,selectedYear,selectedSeason)
+
+    selectedBarTeam = document.getElementById('teamDropdown').value,
+    selectedLollipopTeam = document.getElementById('teamDropdownlollipop').value,
+    selectedStackTeam1 = document.getElementById('teamDropdownstack1').value,
+    selectedStackTeam2 = document.getElementById('teamDropdownstack2').value, 
+
+
+    // Perform any other actions based on the selected value here
+    drawLines()
+    barChartRace(data,selectedYear,selectedSeason,selectedRaceSide)
+    barChart(data,selectedYear,selectedSeason,selectedBarSide , selectedBarTeam)
+    heatmap(data,selectedYear,selectedSeason,selectedHeatSide)
+    lollipopChart(data,selectedYear,selectedSeason,selectedLollipopSide , selectedLollipopTeam)
+    stackedBarChart(data,selectedYear,selectedSeason , selectedStackSide,selectedStackTeam1,selectedStackTeam2)
+
+}
+
+function drawLines(){
+
+    var margin = {top: 20, right: 200, bottom: 40, left: 80},
+        width = 1200 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+
+    function tweenDash() {
+        var l = this.getTotalLength(),
+            i = d3.interpolateString("0," + l, l + "," + l);
+        return function (t) { return i(t); };
+    }
+    function transition(selection) {
+        selection.each(function(){
+        d3.select(this).transition()
+                    .duration(2000)
+                    .attrTween("stroke-dasharray", tweenDash);
+        })
+            }
+
+    d3.select('.svg').remove()
+
+    var svg = d3.select("#lineChart")
+    .style("width", width + margin.left + margin.right + "px")
+    .style("height", height + margin.top + margin.bottom + "px")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform","translate(" + margin.left + "," + margin.top + ")")
+    .attr("class", "svg");
+
+    var attribute = d3.select('#attribute-input').property('value')
+    selectedData = data.filter(d=> d.Side == attribute && d.Year==selectedYear && d.Season==selectedSeason)
+    let lineChartData = []
+    selectedData.forEach(element => { 
+        let golddiff = JSON.parse(element.Golddiff)
+        let count = JSON.parse(element.Count)
+        let values = []
+        golddiff.forEach((el , i)=>{
+            values.push({x:i, y:+el , count:count[i]})
+        })
+        lineChartData.push({key:element.Team, values:values})
+    }); 
+    console.log(lineChartData)
+
+
+    var maxX =  d3.max(lineChartData, function(c) { return d3.max(c.values, function(d) { return d.x; }); }) 
+
+    var maxY =  d3.max(lineChartData, function(c) { return d3.max(c.values, function(d) { return d.y; }); }) 
+    var minY =  d3.min(lineChartData, function(c) { return d3.min(c.values, function(d) { return d.y; }); }) 
+
+    // Set the ranges
+    var x = d3.scaleLinear().domain([0,maxX]).range([0, width]);
+    var y = d3.scaleLinear().domain([minY,maxY]).range([height, 0]).nice();
+    var color = d3.scaleOrdinal(d3.schemeCategory10);  
+
+    // Define the line
+    var valueLine = d3.line()
+    .x(function(d) { return x(+d.x); })
+    .y(function(d) { return y(+d.y); })
+
+    // Set up the x axis
+    var xaxis = svg.append("g")
+    .attr("transform", "translate(0," + y(0) + ")")
+    .attr("class", "x axis")
+    .call(d3.axisBottom(x));
+
+    //add label to x-axis
+    svg.append("text")      // text label for the x axis
+    .attr("transform", "translate("+ (width + margin.left-50) +"," + (y(0)+10) + ")")
+        .style("text-anchor", "middle")
+        .text("Minute");
+
+    // Add the Y Axis
+    var yaxis = svg.append("g")
+                .attr("class", "y axis")
+                .call(d3.axisLeft(y).ticks(5));
+
+    // Add a label to the y axis
+    svg.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - 60)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1em")
+        .style("text-anchor", "middle")
+        .text("Golddiff value")
+        .attr("class", "y axis label");
+    
+    svg.append('text')
+        .attr('class', 'title')
+        .attr('x', width - 400)
+        .attr('y', margin.top - 5)
+        .attr('text-anchor', 'middle')
+        .text('Gold difference')
+        .style("font-size", "22px")
+        .style("font-weight", "bold");
+        
+
+        var selectedLine;
+
+        svg.append('rect').attr('width' , width).attr('height' , height).attr('opacity' , 0).attr('fill' , 'white')
+        .on('click', function(){
+            selectedLine = undefined;
+            d3.selectAll('.line').style('opacity' , 1).style("cursor", "default").attr('stroke-width' , 2)
+
+        })
+
+    lineChartData.forEach(d=>{
+        g = svg.append('g').attr('class' , d.key)
+
+        d.values = d.values.sort((a,b) => (+a.key) - (+b.key))
+        var circle  = svg.append('circle').attr('opacity' , 0).attr('r' , 5).attr('fill' , 'red') 
+
+        
+        
+
+        g
+        .append("path")
+        .attr('class' , 'line')
+        .attr("d", valueLine(d.values))
+        .attr('stroke' , color(d.key))
+        .attr('fill' , 'none')
+        .attr('stroke-width' , 2)
+        .on('mousemove', function(e){
+
+            // Find the corresponding x and y values
+            var xValue = x.invert(d3.mouse(this)[0] - this.getBoundingClientRect().left + 216);
+            var yValue = y.invert(d3.mouse(this)[1] - this.getBoundingClientRect().top);
+
+            // Get the y-value at the nearest x-coordinate on the line
+            var bisect = d3.bisector(function(a) { return a.x; }).left;
+            var index = bisect(d.values, xValue, 1);
+            var point = d.values[index - 1];
+            if (index < d.values.length && xValue - point.x > d.values[index].x - xValue) {
+                point = d.values[index];
+            }
+            var yValue = point.y;
+
+            // console.log(selectedLine , d)
+            if (selectedLine == d){
+            circle.attr('cx' , x(xValue)).attr('cy' , y(yValue)).attr('opacity' , 1)
+
+                d3.select("#tooltip")
+            .style('opacity' , 1)
+            .html("<b>Team: </b>" + d.key +
+            "</br><b>Minute:</b> " + xValue.toFixed(0)+
+            "</br><b>Golddiff value:</b> " + yValue.toFixed(2)+
+            "</br><b>Game count:</b> " + d.values[xValue.toFixed(0)].count)
+            .style("left", ( d3.event.pageX + 20)  +"px") 
+            .style("top", (d3.event.pageY - 60) + "px")
+            .style("fill-opacity","0.5")
+            .style('background' , color(d.key) )
+            }
+            
+        })
+        .on('mouseout' , function(e){
+            circle.attr('opacity' , 0)
+            // d3.select(this).style("cursor", "default").attr('stroke-width' , 2); 
+            // d3.selectAll('.line').style('opacity' , 1)
+            d3.select("#tooltip").style('opacity' , 0).html('')
+            .style("left", (0) + "px") 
+            .style("top", (0) + "px")
+        }).on('click' , function(e){
+            selectedLine = d
+            d3.selectAll('.line').style('opacity' , 0.2).style("cursor", "default").attr('stroke-width' , 2)
+            d3.select(this).style("cursor", "pointer").attr('stroke-width' , 10).style('opacity' ,1); 
+            
+        }) 
+
+
+    })
+
+
+    transition(d3.selectAll(".line"))
+}
+
+</script>
+</body>
 </html>

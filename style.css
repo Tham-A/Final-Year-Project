@@ -1,5 +1,5 @@
 body {
-   background-image: url(964702.png);
+   background-image: url(background.jpg);
    background-size: cover;
    background-repeat: no-repeat;
    background-position: center;
@@ -15,7 +15,7 @@ h1 {
 }
 label {
    font-size: 25px;
-   color: #055E73;
+   color: yellow;
    font-weight: bold;
 }
 #year {
@@ -29,10 +29,11 @@ textarea {
    width: 650px;
    height: auto;
    border: 5px solid green;
-   padding: 10px;
-   margin: 20px;
+   padding: 5px;
+   margin: 10px;
    margin: 0 auto;
    font-size: 14px;
+   font-weight: bold;
 }
 
 #tooltip {  
@@ -72,6 +73,12 @@ textarea {
       justify-content: space-evenly;
       font-size: 25px;
     }
+    .button-container2 {
+      display: flex;
+      justify-content: space-evenly;
+      position: sticky;
+      top:0;
+   }
     .visualization{
         border:#949090 solid 0.5px;
         background-color: rgba(254,254,254,0.95);
